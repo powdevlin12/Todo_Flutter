@@ -14,6 +14,7 @@ class _TodoAppState extends State<TodoApp> {
   final TextEditingController _controller = TextEditingController();
   final List<Todo> _todos = [];
   List<Todo> _filteredTodos = [];
+  final TextEditingController _dateController = TextEditingController();
 
   @override
   void initState() {
@@ -25,11 +26,13 @@ class _TodoAppState extends State<TodoApp> {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _todos.add(Todo(
-          id: DateTime.now().toString(),
-          content: _controller.text,
-          isDone: false,
-        ));
+            id: DateTime.now().toString(),
+            content: _controller.text,
+            isDone: false,
+            date: _dateController.text));
+        _dateController.text = "";
       });
+
       _filteredTodos = _todos;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Task Added: ${_controller.text}')),
@@ -62,6 +65,19 @@ class _TodoAppState extends State<TodoApp> {
     });
   }
 
+  Future<void> _selectDate() async {
+    DateTime? picked = await showDatePicker(
+        context: context,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100),
+        initialDate: DateTime.now());
+    if (picked != null) {
+      setState(() {
+        _dateController.text = picked.toString().split(" ")[0];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,52 +94,77 @@ class _TodoAppState extends State<TodoApp> {
               context: context,
               builder: (BuildContext context) {
                 return Container(
-                  height: 120 + MediaQuery.of(context).viewInsets.bottom,
+                  height: 300 + MediaQuery.of(context).viewInsets.bottom,
                   // color: Colors.amber,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
                   alignment: Alignment.topLeft,
                   child: Form(
                     key: _formKey,
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: _controller,
-                            decoration: InputDecoration(
-                              hintText: 'Enter your task',
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide.none,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 14,
-                                horizontal: 16,
-                              ),
+                        TextFormField(
+                          controller: _controller,
+                          decoration: InputDecoration(
+                            hintText: 'Enter your task',
+                            labelText: 'Todo name',
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a task';
-                              }
-                              return null;
-                            },
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                              horizontal: 16,
+                            ),
                           ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a task';
+                            }
+                            return null;
+                          },
                         ),
                         const SizedBox(width: 12),
-                        ElevatedButton(
-                          onPressed: _submitForm,
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 14,
-                              horizontal: 24,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                        TextField(
+                          controller: _dateController,
+                          decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              labelText: 'Date',
+                              filled: true,
+                              prefixIcon: const Icon(Icons.calendar_today),
+                              enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade700))),
+                          readOnly: true,
+                          onTap: () {
+                            _selectDate();
+                          },
+                        ),
+                        const SizedBox(width: 12),
+                        SizedBox(
+                          width: 200,
+                          child: ElevatedButton(
+                            onPressed: _submitForm,
+                            style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                  horizontal: 24,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                backgroundColor: Colors.grey.shade700),
+                            child: const Text(
+                              'Add',
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
-                          child: const Text('Add'),
                         ),
                       ],
                     ),
@@ -166,14 +207,26 @@ class _TodoAppState extends State<TodoApp> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: ListTile(
-                            title: Text(
-                              todo.content,
-                              style: TextStyle(
-                                fontSize: 18,
-                                decoration: todo.isDone
-                                    ? TextDecoration.lineThrough
-                                    : TextDecoration.none,
-                              ),
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  todo.date,
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey),
+                                ),
+                                Text(
+                                  todo.content,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    decoration: todo.isDone
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none,
+                                  ),
+                                )
+                              ],
                             ),
                             leading: Checkbox(
                               shape: const CircleBorder(),
@@ -185,11 +238,22 @@ class _TodoAppState extends State<TodoApp> {
                                 });
                               },
                             ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                _handleDeleteItem(todo.content);
-                              },
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                todo.isDone
+                                    ? IconButton(
+                                        icon: const Icon(Icons.check,
+                                            color: Colors.blueAccent),
+                                        onPressed: () => {},
+                                      )
+                                    : IconButton(
+                                        icon: const Icon(Icons.delete,
+                                            color: Colors.red),
+                                        onPressed: () =>
+                                            _handleDeleteItem(todo.id),
+                                      ),
+                              ],
                             ),
                           ),
                         );
