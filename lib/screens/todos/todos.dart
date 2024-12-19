@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learn_fluter/commons/widgets/search_common.dart';
 import 'package:learn_fluter/models/todo_model.dart';
+import 'package:learn_fluter/utils/SnackbarCustom.dart';
 
 class TodoApp extends StatefulWidget {
   const TodoApp({super.key});
@@ -34,16 +35,13 @@ class _TodoAppState extends State<TodoApp> {
       });
 
       _filteredTodos = _todos;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Task Added: ${_controller.text}')),
-      );
+      openSnackbar(context, 'Task Added: ${_controller.text}');
       _controller.clear();
       Navigator.pop(context);
     }
   }
 
   void _handleSearch(String value) {
-    print("handle search$value");
     setState(() {
       if (value.isEmpty) {
         _filteredTodos = _todos;
@@ -56,13 +54,26 @@ class _TodoAppState extends State<TodoApp> {
     });
   }
 
-  void _handleDeleteItem(String contentSearch) {
-    int indexInTodo = _todos.indexWhere((todo) =>
-        todo.content.toString().toLowerCase().contains(contentSearch));
+  void _handleDeleteItem(String id) {
+    final todoToDelete = _todos.firstWhere((todo) => todo.id == id);
     setState(() {
-      _todos.removeAt(indexInTodo);
+      _todos.removeWhere((todo) => todo.id == id);
       _filteredTodos = _todos;
     });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text("Todo deleted"),
+        action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(() {
+              _todos.add(todoToDelete);
+            });
+          },
+        ),
+      ),
+    );
   }
 
   Future<void> _selectDate() async {
@@ -83,7 +94,7 @@ class _TodoAppState extends State<TodoApp> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Todo List',
+          'Manage task',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
