@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learn_fluter/commons/widgets/search_common.dart';
 import 'package:learn_fluter/models/todo_model.dart';
+import 'package:learn_fluter/screens/todos/todos_storage.dart';
 import 'package:learn_fluter/utils/SnackbarCustom.dart';
 
 class TodoApp extends StatefulWidget {
@@ -13,28 +14,38 @@ class TodoApp extends StatefulWidget {
 class _TodoAppState extends State<TodoApp> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _controller = TextEditingController();
-  final List<Todo> _todos = [];
+  List<Todo> _todos = [];
   List<Todo> _filteredTodos = [];
   final TextEditingController _dateController = TextEditingController();
 
   @override
   void initState() {
+    _loadTodos();
     super.initState();
     // _filteredTodos = _todos; // Ban đầu, danh sách lọc giống danh sách gốc
   }
 
+  Future<void> _loadTodos() async {
+    final List<Todo> loadedTodos = await TodoStorage.loadTodos();
+    setState(() {
+      _todos = loadedTodos;
+      _filteredTodos = _todos;
+    });
+  }
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
+      Todo todo = Todo(
+          id: DateTime.now().toString(),
+          content: _controller.text,
+          isDone: false,
+          date: _dateController.text);
       setState(() {
-        _todos.add(Todo(
-            id: DateTime.now().toString(),
-            content: _controller.text,
-            isDone: false,
-            date: _dateController.text));
+        _todos.add(todo);
         _dateController.text = "";
       });
-
       _filteredTodos = _todos;
+      TodoStorage.saveTodos(_todos);
       openSnackbar(context, 'Task Added: ${_controller.text}');
       _controller.clear();
       Navigator.pop(context);
@@ -61,6 +72,8 @@ class _TodoAppState extends State<TodoApp> {
       _filteredTodos = _todos;
     });
 
+    TodoStorage.saveTodos(_todos);
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text("Todo deleted"),
@@ -74,6 +87,18 @@ class _TodoAppState extends State<TodoApp> {
         ),
       ),
     );
+  }
+
+  Future<void> toggleDoneTodo(String id, bool? isDone) async {
+    int todoIndex = _todos.lastIndexWhere((todo) => todo.id == id);
+    Todo todoProcess = _todos[todoIndex];
+    todoProcess.isDone = isDone ?? false;
+
+    setState(() {
+      _todos[todoIndex] = todoProcess;
+    });
+
+    TodoStorage.saveTodos(_todos);
   }
 
   Future<void> _selectDate() async {
@@ -244,9 +269,7 @@ class _TodoAppState extends State<TodoApp> {
                               activeColor: Colors.blue,
                               value: todo.isDone,
                               onChanged: (value) {
-                                setState(() {
-                                  todo.isDone = value ?? false;
-                                });
+                                toggleDoneTodo(todo.id, value);
                               },
                             ),
                             trailing: Row(
