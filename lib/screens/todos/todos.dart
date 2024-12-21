@@ -83,6 +83,7 @@ class _TodoAppState extends State<TodoApp> {
             setState(() {
               _todos.add(todoToDelete);
             });
+            TodoStorage.saveTodos(_todos);
           },
         ),
       ),
