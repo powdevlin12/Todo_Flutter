@@ -11,12 +11,15 @@ class TodoApp extends StatefulWidget {
   createState() => _TodoAppState();
 }
 
+enum SingingCharacter { all, done, notDone }
+
 class _TodoAppState extends State<TodoApp> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _controller = TextEditingController();
   List<Todo> _todos = [];
   List<Todo> _filteredTodos = [];
   final TextEditingController _dateController = TextEditingController();
+  SingingCharacter? _character = SingingCharacter.all;
 
   @override
   void initState() {
@@ -115,6 +118,22 @@ class _TodoAppState extends State<TodoApp> {
     }
   }
 
+  void handleFilter() {
+    List<Todo> tempList = [..._todos];
+
+    if (_character == SingingCharacter.all) {
+      tempList = _todos;
+    } else if (_character == SingingCharacter.done) {
+      tempList = tempList.where((todo) => todo.isDone).toList();
+    } else {
+      tempList = tempList.where((todo) => !todo.isDone).toList();
+    }
+    setState(() {
+      _filteredTodos = tempList;
+    });
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,6 +161,24 @@ class _TodoAppState extends State<TodoApp> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        TextField(
+                          controller: _dateController,
+                          decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              labelText: 'Date',
+                              filled: true,
+                              prefixIcon: const Icon(Icons.calendar_today),
+                              enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade700))),
+                          readOnly: true,
+                          onTap: () {
+                            _selectDate();
+                          },
+                        ),
+                        const SizedBox(width: 12),
                         TextFormField(
                           controller: _controller,
                           decoration: InputDecoration(
@@ -163,24 +200,6 @@ class _TodoAppState extends State<TodoApp> {
                               return 'Please enter a task';
                             }
                             return null;
-                          },
-                        ),
-                        const SizedBox(width: 12),
-                        TextField(
-                          controller: _dateController,
-                          decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              labelText: 'Date',
-                              filled: true,
-                              prefixIcon: const Icon(Icons.calendar_today),
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade700))),
-                          readOnly: true,
-                          onTap: () {
-                            _selectDate();
                           },
                         ),
                         const SizedBox(width: 12),
@@ -223,7 +242,103 @@ class _TodoAppState extends State<TodoApp> {
             SearchBarCommon(
               onSearch: _handleSearch,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'List task',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.filter_list_sharp,
+                    size: 32,
+                  ),
+                  onPressed: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          height:
+                              300 + MediaQuery.of(context).viewInsets.bottom,
+                          // color: Colors.amber,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 20),
+                          alignment: Alignment.topLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              const Text(
+                                'Type todo',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w600),
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  RadioListTile<SingingCharacter>(
+                                    title: const Text('All'),
+                                    value: SingingCharacter.all,
+                                    groupValue: _character,
+                                    onChanged: (SingingCharacter? value) {
+                                      setState(() {
+                                        _character = value;
+                                      });
+                                    },
+                                  ),
+                                  RadioListTile<SingingCharacter>(
+                                    title: const Text('Done'),
+                                    value: SingingCharacter.done,
+                                    groupValue: _character,
+                                    onChanged: (SingingCharacter? value) {
+                                      setState(() {
+                                        _character = value;
+                                      });
+                                    },
+                                  ),
+                                  RadioListTile<SingingCharacter>(
+                                    title: const Text('Not Done'),
+                                    value: SingingCharacter.notDone,
+                                    groupValue: _character,
+                                    onChanged: (SingingCharacter? value) {
+                                      setState(() {
+                                        _character = value;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: handleFilter,
+                                  style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                        horizontal: 24,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      backgroundColor: Colors.grey.shade700),
+                                  child: const Text(
+                                    'Filter',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                )
+              ],
+            ),
+            const SizedBox(height: 4),
             // Task List
             Expanded(
               child: _todos.isEmpty
