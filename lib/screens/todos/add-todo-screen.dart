@@ -107,8 +107,10 @@ class AddTodoScreenState extends State<AddTodoScreen> {
                     labelText: 'Date',
                     filled: true,
                     prefixIcon: const Icon(Icons.calendar_today),
-                    enabledBorder:
-                        const OutlineInputBorder(borderSide: BorderSide.none),
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius:
+                            BorderRadius.all(Radius.elliptical(10, 12))),
                     focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey.shade700))),
                 readOnly: true,

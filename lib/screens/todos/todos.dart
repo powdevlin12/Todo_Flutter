@@ -205,78 +205,86 @@ class _TodoAppState extends State<TodoApp> {
                     showModalBottomSheet<void>(
                       context: context,
                       builder: (BuildContext context) {
-                        return Container(
-                          height:
-                              300 + MediaQuery.of(context).viewInsets.bottom,
-                          // color: Colors.amber,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 20),
-                          alignment: Alignment.topLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              const Text(
-                                'Type todo',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w600),
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  RadioListTile<SingingCharacter>(
-                                    title: const Text('All'),
-                                    value: SingingCharacter.all,
-                                    groupValue: _character,
-                                    onChanged: (SingingCharacter? value) {
-                                      setState(() {
-                                        _character = value;
-                                      });
-                                    },
+                        return StatefulBuilder(
+                          builder: (context, setState) {
+                            return Container(
+                              height: 300 +
+                                  MediaQuery.of(context).viewInsets.bottom,
+                              // color: Colors.amber,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 20),
+                              alignment: Alignment.topLeft,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const Text(
+                                    'Type todo',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600),
                                   ),
-                                  RadioListTile<SingingCharacter>(
-                                    title: const Text('Done'),
-                                    value: SingingCharacter.done,
-                                    groupValue: _character,
-                                    onChanged: (SingingCharacter? value) {
-                                      setState(() {
-                                        _character = value;
-                                      });
-                                    },
+                                  Column(
+                                    children: <Widget>[
+                                      RadioListTile<SingingCharacter>(
+                                        title: const Text('All'),
+                                        value: SingingCharacter.all,
+                                        groupValue: _character,
+                                        onChanged: (SingingCharacter? value) {
+                                          setState(() {
+                                            _character = value;
+                                          });
+                                        },
+                                      ),
+                                      RadioListTile<SingingCharacter>(
+                                        title: const Text('Done'),
+                                        value: SingingCharacter.done,
+                                        groupValue: _character,
+                                        onChanged: (SingingCharacter? value) {
+                                          setState(() {
+                                            _character = value;
+                                          });
+                                        },
+                                      ),
+                                      RadioListTile<SingingCharacter>(
+                                        title: const Text('Not Done'),
+                                        value: SingingCharacter.notDone,
+                                        groupValue: _character,
+                                        onChanged: (SingingCharacter? value) {
+                                          setState(() {
+                                            _character = value;
+                                          });
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                  RadioListTile<SingingCharacter>(
-                                    title: const Text('Not Done'),
-                                    value: SingingCharacter.notDone,
-                                    groupValue: _character,
-                                    onChanged: (SingingCharacter? value) {
-                                      setState(() {
-                                        _character = value;
-                                      });
-                                    },
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: handleFilter,
+                                      style: ElevatedButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                            horizontal: 24,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          backgroundColor:
+                                              Colors.grey.shade700),
+                                      child: const Text(
+                                        'Filter',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 16),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: handleFilter,
-                                  style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 12,
-                                        horizontal: 24,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      backgroundColor: Colors.grey.shade700),
-                                  child: const Text(
-                                    'Filter',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            );
+                          },
                         );
                       },
                     );
