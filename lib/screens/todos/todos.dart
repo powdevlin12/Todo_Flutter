@@ -3,6 +3,7 @@ import 'package:learn_fluter/commons/widgets/search_common.dart';
 import 'package:learn_fluter/models/todo_model.dart';
 import 'package:learn_fluter/screens/todos/todos_storage.dart';
 import 'package:learn_fluter/utils/SnackbarCustom.dart';
+import 'package:learn_fluter/screens/todos/add-todo-screen.dart';
 
 class TodoApp extends StatefulWidget {
   const TodoApp({super.key});
@@ -134,6 +135,32 @@ class _TodoAppState extends State<TodoApp> {
     Navigator.pop(context);
   }
 
+  void _navigationAddTodoPage() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const AddTodoScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0); // Bắt đầu từ bên phải
+          const end = Offset.zero; // Kết thúc tại vị trí ban đầu
+          const curve = Curves.easeInOut;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+      ),
+    ).then((result) {
+      _loadTodos();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,88 +173,7 @@ class _TodoAppState extends State<TodoApp> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            showModalBottomSheet<void>(
-              context: context,
-              builder: (BuildContext context) {
-                return Container(
-                  height: 300 + MediaQuery.of(context).viewInsets.bottom,
-                  // color: Colors.amber,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
-                  alignment: Alignment.topLeft,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        TextField(
-                          controller: _dateController,
-                          decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              labelText: 'Date',
-                              filled: true,
-                              prefixIcon: const Icon(Icons.calendar_today),
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade700))),
-                          readOnly: true,
-                          onTap: () {
-                            _selectDate();
-                          },
-                        ),
-                        const SizedBox(width: 12),
-                        TextFormField(
-                          controller: _controller,
-                          decoration: InputDecoration(
-                            hintText: 'Enter your task',
-                            labelText: 'Todo name',
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 14,
-                              horizontal: 16,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a task';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(width: 12),
-                        SizedBox(
-                          width: 200,
-                          child: ElevatedButton(
-                            onPressed: _submitForm,
-                            style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                  horizontal: 24,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                backgroundColor: Colors.grey.shade700),
-                            child: const Text(
-                              'Add',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
+            _navigationAddTodoPage();
           },
           backgroundColor: Colors.blueGrey.shade600,
           child: const Icon(
