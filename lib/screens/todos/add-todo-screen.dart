@@ -1,13 +1,22 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
 import 'package:learn_fluter/models/todo_model.dart';
 import 'package:learn_fluter/screens/todos/todos_storage.dart';
 import 'package:learn_fluter/utils/snackbarCustom.dart';
 
 class AddTodoScreen extends StatefulWidget {
-  const AddTodoScreen({super.key});
+  final String type;
+  Todo? todo;
+
+  AddTodoScreen({
+    super.key,
+    required this.type,
+    this.todo,
+  });
 
   @override
-  createState() => AddTodoScreenState();
+  createState() => AddTodoScreenState(type: type, todo: todo);
 }
 
 class AddTodoScreenState extends State<AddTodoScreen> {
@@ -16,11 +25,22 @@ class AddTodoScreenState extends State<AddTodoScreen> {
   final TextEditingController _controller = TextEditingController();
   List<Todo> _todos = [];
 
+  // edit or add
+  final String type;
+  Todo? todo;
+// Constructor để nhận dữ liệu
+  AddTodoScreenState({required this.type, this.todo});
+
   @override
   void initState() {
     _loadTodos();
     super.initState();
-    // _filteredTodos = _todos; // Ban đầu, danh sách lọc giống danh sách gốc
+    _controller.value = type == "add"
+        ? const TextEditingValue(text: "")
+        : TextEditingValue(text: todo?.content ?? "");
+    _dateController.value = type == "add"
+        ? const TextEditingValue(text: "")
+        : TextEditingValue(text: todo?.date ?? "");
   }
 
   Future<void> _loadTodos() async {
@@ -35,7 +55,8 @@ class AddTodoScreenState extends State<AddTodoScreen> {
         context: context,
         firstDate: DateTime(2000),
         lastDate: DateTime(2100),
-        initialDate: DateTime.now());
+        initialDate:
+            type == "add" ? DateTime.now() : DateTime.parse(todo?.date ?? ""));
     if (picked != null) {
       setState(() {
         _dateController.text = picked.toString().split(" ")[0];
@@ -61,12 +82,33 @@ class AddTodoScreenState extends State<AddTodoScreen> {
     }
   }
 
+  void _handleUpdateTodo() {
+    if (_formKey.currentState!.validate()) {
+      Todo todoEdit = Todo(
+          id: todo?.id ?? "",
+          content: _controller.text,
+          isDone: todo?.isDone ?? false,
+          date: _dateController.text);
+
+      setState(() {
+        _dateController.text = "";
+      });
+
+      int indexTodo = _todos.indexWhere((i) => i.id == todoEdit.id);
+      _todos[indexTodo] = todoEdit;
+      TodoStorage.saveTodos(_todos);
+      openSnackbar(context, 'Update success : ${_controller.text}');
+      _controller.clear();
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Todo',
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
+        title: Text(type == "add" ? 'Add Todo' : 'Edit todo',
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -122,7 +164,7 @@ class AddTodoScreenState extends State<AddTodoScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _submitForm,
+                  onPressed: type == 'add' ? _submitForm : _handleUpdateTodo,
                   style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                         vertical: 14,
@@ -132,9 +174,9 @@ class AddTodoScreenState extends State<AddTodoScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       backgroundColor: Colors.grey.shade700),
-                  child: const Text(
-                    'Add',
-                    style: TextStyle(color: Colors.white),
+                  child: Text(
+                    type == "add" ? 'Add' : 'Update',
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ),

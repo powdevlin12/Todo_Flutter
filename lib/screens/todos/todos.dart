@@ -139,8 +139,36 @@ class _TodoAppState extends State<TodoApp> {
     Navigator.push(
       context,
       PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => AddTodoScreen(
+          type: "add",
+          todo: null,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0); // Bắt đầu từ bên phải
+          const end = Offset.zero; // Kết thúc tại vị trí ban đầu
+          const curve = Curves.easeInOut;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+      ),
+    ).then((result) {
+      _loadTodos();
+    });
+  }
+
+  void _navigationEditTodoPage(Todo todo) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            const AddTodoScreen(),
+            AddTodoScreen(type: "edit", todo: todo),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0); // Bắt đầu từ bên phải
           const end = Offset.zero; // Kết thúc tại vị trí ban đầu
@@ -351,12 +379,28 @@ class _TodoAppState extends State<TodoApp> {
                                             color: Colors.blueAccent),
                                         onPressed: () => {},
                                       )
-                                    : IconButton(
-                                        icon: const Icon(Icons.delete,
-                                            color: Colors.red),
-                                        onPressed: () =>
-                                            _handleDeleteItem(todo.id),
-                                      ),
+                                    : Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 36,
+                                            child: IconButton(
+                                                icon: const Icon(Icons.edit,
+                                                    color: Colors.blue),
+                                                onPressed: () =>
+                                                    _navigationEditTodoPage(
+                                                        todo)),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                            child: IconButton(
+                                              icon: const Icon(Icons.delete,
+                                                  color: Colors.red),
+                                              onPressed: () =>
+                                                  _handleDeleteItem(todo.id),
+                                            ),
+                                          ),
+                                        ],
+                                      )
                               ],
                             ),
                           ),
