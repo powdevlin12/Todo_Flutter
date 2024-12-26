@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learn_fluter/screens/home/index.dart';
 import 'package:learn_fluter/screens/settings/setting.dart';
 import 'package:learn_fluter/screens/todos/todos.dart';
 
@@ -32,7 +33,8 @@ class _BottomTabState extends State<BottomTab> {
   // Danh sách các màn hình
   final List<Widget> _screens = [
     const TodoApp(),
-    const Screen2(),
+    const MyCounterPage(),
+    const HomePage(),
   ];
 
   @override
@@ -48,12 +50,16 @@ class _BottomTabState extends State<BottomTab> {
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.work_sharp),
+            icon: Icon(Icons.home),
             label: 'Todos',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.accessibility),
-            label: 'State',
+            icon: Icon(Icons.assessment),
+            label: 'Counter',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
         ],
       ),
