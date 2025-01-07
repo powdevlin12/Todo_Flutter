@@ -355,11 +355,17 @@ class _TodoAppState extends State<TodoApp> {
                                   todo.content,
                                   style: TextStyle(
                                     fontSize: 16,
+                                    fontWeight: FontWeight.w600,
                                     decoration: todo.isDone
                                         ? TextDecoration.lineThrough
                                         : TextDecoration.none,
                                   ),
-                                )
+                                ),
+                                if (todo.description != null)
+                                  Text(
+                                    todo.description ?? "",
+                                    style: const TextStyle(fontSize: 14),
+                                  )
                               ],
                             ),
                             leading: Checkbox(

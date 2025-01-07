@@ -23,6 +23,7 @@ class AddTodoScreenState extends State<AddTodoScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
   List<Todo> _todos = [];
 
   // edit or add
@@ -38,6 +39,9 @@ class AddTodoScreenState extends State<AddTodoScreen> {
     _controller.value = type == "add"
         ? const TextEditingValue(text: "")
         : TextEditingValue(text: todo?.content ?? "");
+    _descriptionController.value = type == "add"
+        ? const TextEditingValue(text: "")
+        : TextEditingValue(text: todo?.description ?? "");
     _dateController.value = type == "add"
         ? const TextEditingValue(text: "")
         : TextEditingValue(text: todo?.date ?? "");
@@ -70,6 +74,7 @@ class AddTodoScreenState extends State<AddTodoScreen> {
           id: DateTime.now().toString(),
           content: _controller.text,
           isDone: false,
+          description: _descriptionController.text,
           date: _dateController.text);
       setState(() {
         _todos.add(todo);
@@ -88,8 +93,8 @@ class AddTodoScreenState extends State<AddTodoScreen> {
           id: todo?.id ?? "",
           content: _controller.text,
           isDone: todo?.isDone ?? false,
+          description: _descriptionController.text ?? "",
           date: _dateController.text);
-
       setState(() {
         _dateController.text = "";
       });
@@ -140,6 +145,24 @@ class AddTodoScreenState extends State<AddTodoScreen> {
                   }
                   return null;
                 },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  hintText: 'Description',
+                  labelText: 'Description',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 16,
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               TextField(

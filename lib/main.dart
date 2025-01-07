@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:learn_fluter/screens/home/index.dart';
-import 'package:learn_fluter/screens/settings/setting.dart';
 import 'package:learn_fluter/screens/todos/todos.dart';
 
 void main() {
@@ -27,42 +25,8 @@ class BottomTab extends StatefulWidget {
 }
 
 class _BottomTabState extends State<BottomTab> {
-  // Biến để theo dõi chỉ số tab hiện tại
-  int _currentIndex = 0;
-
-  // Danh sách các màn hình
-  final List<Widget> _screens = [
-    const TodoApp(),
-    const MyCounterPage(),
-    const HomePage(),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_currentIndex], // Hiển thị màn hình tương ứng
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex, // Tab đang được chọn
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index; // Cập nhật tab
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Todos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assessment),
-            label: 'Counter',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-        ],
-      ),
-    );
+    return const Scaffold(body: TodoApp());
   }
 }

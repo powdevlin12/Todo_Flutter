@@ -8,7 +8,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        elevation: 0,
+        elevation: 0.2,
         title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -25,7 +25,10 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
+            icon: const Icon(
+              Icons.notifications_outlined,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
@@ -72,11 +75,15 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       _buildCategoryChip('Sports', Colors.orange),
+                      const SizedBox(width: 16),
                       _buildCategoryChip('Music', Colors.red),
+                      const SizedBox(width: 16),
                       _buildCategoryChip('Food', Colors.green),
+                      const SizedBox(width: 16),
+                      _buildCategoryChip('Sports', Colors.orange),
                     ],
                   ),
                 ],
