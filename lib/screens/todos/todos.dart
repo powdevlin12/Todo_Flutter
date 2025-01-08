@@ -334,88 +334,84 @@ class _TodoAppState extends State<TodoApp> {
                       itemCount: _filteredTodos.length,
                       itemBuilder: (context, index) {
                         final todo = _filteredTodos[index];
-                        if (!todo.isDone ||
-                            (_character == SingingCharacter.done &&
-                                todo.isDone)) {
-                          return Card(
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            elevation: 3,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: ListTile(
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    todo.date,
-                                    style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.grey),
-                                  ),
-                                  Text(
-                                    todo.content,
-                                    style: TextStyle(
-                                      fontSize: 16,
+                        return Card(
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  todo.date,
+                                  style: const TextStyle(
+                                      fontSize: 12,
                                       fontWeight: FontWeight.w600,
-                                      decoration: todo.isDone
-                                          ? TextDecoration.lineThrough
-                                          : TextDecoration.none,
-                                    ),
+                                      color: Colors.grey),
+                                ),
+                                Text(
+                                  todo.content,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: todo.isDone
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none,
                                   ),
-                                  if (todo.description != null)
-                                    Text(
-                                      todo.description ?? "",
-                                      style: const TextStyle(fontSize: 14),
-                                    )
-                                ],
-                              ),
-                              leading: Checkbox(
-                                shape: const CircleBorder(),
-                                activeColor: Colors.blue,
-                                value: todo.isDone,
-                                onChanged: (value) {
-                                  toggleDoneTodo(todo.id, value);
-                                },
-                              ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  todo.isDone
-                                      ? IconButton(
-                                          icon: const Icon(Icons.check,
-                                              color: Colors.blueAccent),
-                                          onPressed: () => {},
-                                        )
-                                      : Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 36,
-                                              child: IconButton(
-                                                  icon: const Icon(Icons.edit,
-                                                      color: Colors.blue),
-                                                  onPressed: () =>
-                                                      _navigationEditTodoPage(
-                                                          todo)),
-                                            ),
-                                            SizedBox(
-                                              width: 20,
-                                              child: IconButton(
-                                                icon: const Icon(Icons.delete,
-                                                    color: Colors.red),
-                                                onPressed: () =>
-                                                    _handleDeleteItem(todo.id),
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                ],
-                              ),
+                                ),
+                                if (todo.description != null ||
+                                    todo.description != "")
+                                  Text(
+                                    todo.description ?? "",
+                                    style: const TextStyle(fontSize: 14),
+                                  )
+                              ],
                             ),
-                          );
-                        }
-                        return null;
+                            leading: Checkbox(
+                              shape: const CircleBorder(),
+                              activeColor: Colors.blue,
+                              value: todo.isDone,
+                              onChanged: (value) {
+                                toggleDoneTodo(todo.id, value);
+                              },
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                todo.isDone
+                                    ? IconButton(
+                                        icon: const Icon(Icons.check,
+                                            color: Colors.blueAccent),
+                                        onPressed: () => {},
+                                      )
+                                    : Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 36,
+                                            child: IconButton(
+                                                icon: const Icon(Icons.edit,
+                                                    color: Colors.blue),
+                                                onPressed: () =>
+                                                    _navigationEditTodoPage(
+                                                        todo)),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                            child: IconButton(
+                                              icon: const Icon(Icons.delete,
+                                                  color: Colors.red),
+                                              onPressed: () =>
+                                                  _handleDeleteItem(todo.id),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                              ],
+                            ),
+                          ),
+                        );
                       },
                     ),
             ),
