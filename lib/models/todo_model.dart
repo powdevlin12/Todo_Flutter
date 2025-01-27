@@ -4,13 +4,14 @@ class Todo {
   bool isDone;
   String date;
   String? description;
-
+  int? point;
   Todo(
       {required this.id,
       required this.content,
       required this.date,
       this.description = '',
-      this.isDone = false});
+      this.isDone = false,
+      this.point = 0});
 
   // Convert Todo to JSON
   Map<String, dynamic> toJson() {
@@ -19,7 +20,8 @@ class Todo {
       'content': content,
       'isDone': isDone,
       'date': date,
-      'description': description
+      'description': description,
+      'point': point
     };
   }
 
@@ -30,6 +32,7 @@ class Todo {
         content: json['content'],
         isDone: json['isDone'],
         date: json['date'],
-        description: json['description']);
+        description: json['description'],
+        point: json['point']);
   }
 }

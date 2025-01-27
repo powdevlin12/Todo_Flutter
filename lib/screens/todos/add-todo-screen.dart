@@ -116,7 +116,7 @@ class AddTodoScreenState extends State<AddTodoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(type == "add" ? 'Add Todo' : 'Edit todo',
+        title: Text(type == "add" ? 'Add' : 'Edit',
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
       ),
       body: Padding(
@@ -131,7 +131,7 @@ class AddTodoScreenState extends State<AddTodoScreen> {
                 controller: _controller,
                 decoration: InputDecoration(
                   hintText: 'Enter your task',
-                  labelText: 'Todo name',
+                  labelText: 'Name',
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
@@ -150,43 +150,43 @@ class AddTodoScreenState extends State<AddTodoScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: InputDecoration(
-                  hintText: 'Description',
-                  labelText: 'Description',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 14,
-                    horizontal: 16,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _dateController,
-                decoration: InputDecoration(
-                    fillColor: Colors.white,
-                    labelText: 'Date',
-                    filled: true,
-                    prefixIcon: const Icon(Icons.calendar_today),
-                    enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius:
-                            BorderRadius.all(Radius.elliptical(10, 12))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700))),
-                readOnly: true,
-                onTap: () {
-                  _selectDate();
-                },
-              ),
+              // const SizedBox(height: 20),
+              // TextFormField(
+              //   controller: _descriptionController,
+              //   decoration: InputDecoration(
+              //     hintText: 'Description',
+              //     labelText: 'Description',
+              //     filled: true,
+              //     fillColor: Colors.white,
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(12),
+              //       borderSide: BorderSide.none,
+              //     ),
+              //     contentPadding: const EdgeInsets.symmetric(
+              //       vertical: 14,
+              //       horizontal: 16,
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(height: 20),
+              // TextField(
+              //   controller: _dateController,
+              //   decoration: InputDecoration(
+              //       fillColor: Colors.white,
+              //       labelText: 'Date',
+              //       filled: true,
+              //       prefixIcon: const Icon(Icons.calendar_today),
+              //       enabledBorder: const OutlineInputBorder(
+              //           borderSide: BorderSide.none,
+              //           borderRadius:
+              //               BorderRadius.all(Radius.elliptical(10, 12))),
+              //       focusedBorder: OutlineInputBorder(
+              //           borderSide: BorderSide(color: Colors.grey.shade700))),
+              //   readOnly: true,
+              //   onTap: () {
+              //     _selectDate();
+              //   },
+              // ),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,

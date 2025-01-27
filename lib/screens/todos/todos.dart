@@ -97,6 +97,34 @@ class _TodoAppState extends State<TodoApp> {
     );
   }
 
+  void _handlePlusPoint(String id) {
+    int todoIndex = _todos.lastIndexWhere((todo) => todo.id == id);
+
+    final todoProcessing = _todos[todoIndex];
+    todoProcessing.point = (todoProcessing.point!) + 1;
+
+    setState(() {
+      _todos[todoIndex] = todoProcessing;
+      _filteredTodos = _todos;
+    });
+
+    TodoStorage.saveTodos(_todos);
+  }
+
+  void _handleSubPoint(String id) {
+    int todoIndex = _todos.lastIndexWhere((todo) => todo.id == id);
+
+    final todoProcessing = _todos[todoIndex];
+    todoProcessing.point = (todoProcessing.point!) - 1;
+
+    setState(() {
+      _todos[todoIndex] = todoProcessing;
+      _filteredTodos = _todos;
+    });
+
+    TodoStorage.saveTodos(_todos);
+  }
+
   Future<void> toggleDoneTodo(String id, bool? isDone) async {
     int todoIndex = _todos.lastIndexWhere((todo) => todo.id == id);
     Todo todoProcess = _todos[todoIndex];
@@ -197,7 +225,7 @@ class _TodoAppState extends State<TodoApp> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Manage task',
+          'BaiBac',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -224,7 +252,7 @@ class _TodoAppState extends State<TodoApp> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'List task',
+                  'Filter',
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                 ),
                 IconButton(
@@ -329,7 +357,7 @@ class _TodoAppState extends State<TodoApp> {
               child: _todos.isEmpty
                   ? const Center(
                       child: Text(
-                        'No tasks yet. Add one!',
+                        'No Data!',
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                     )
@@ -347,13 +375,13 @@ class _TodoAppState extends State<TodoApp> {
                             title: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  todo.date,
-                                  style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.grey),
-                                ),
+                                // Text(
+                                //   todo.date,
+                                //   style: const TextStyle(
+                                //       fontSize: 12,
+                                //       fontWeight: FontWeight.w600,
+                                //       color: Colors.grey),
+                                // ),
                                 Text(
                                   todo.content,
                                   style: TextStyle(
@@ -364,11 +392,15 @@ class _TodoAppState extends State<TodoApp> {
                                         : TextDecoration.none,
                                   ),
                                 ),
-                                if (todo.description != null ||
-                                    todo.description != "")
+                                if (todo.point != null)
                                   Text(
-                                    todo.description ?? "",
-                                    style: const TextStyle(fontSize: 14),
+                                    todo.point.toString(),
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: todo.point! >= 0
+                                            ? Colors.blueAccent
+                                            : Colors.red),
                                   )
                               ],
                             ),
@@ -392,16 +424,25 @@ class _TodoAppState extends State<TodoApp> {
                                     : Row(
                                         children: [
                                           SizedBox(
-                                            width: 36,
+                                            width: 40,
                                             child: IconButton(
-                                                icon: const Icon(Icons.edit,
+                                                icon: const Icon(Icons.add,
                                                     color: Colors.blue),
                                                 onPressed: () =>
-                                                    _navigationEditTodoPage(
-                                                        todo)),
+                                                    _handlePlusPoint(todo.id)),
                                           ),
                                           SizedBox(
-                                            width: 20,
+                                            width: 40,
+                                            child: IconButton(
+                                              icon: const Icon(
+                                                  Icons.exposure_minus_1_sharp,
+                                                  color: Colors.brown),
+                                              onPressed: () =>
+                                                  _handleSubPoint(todo.id),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 36,
                                             child: IconButton(
                                               icon: const Icon(Icons.delete,
                                                   color: Colors.red),
