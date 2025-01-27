@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:learn_fluter/models/todo_model.dart';
 import 'package:learn_fluter/screens/todos/todos_storage.dart';
+import 'package:learn_fluter/services/local_notification.dart';
 import 'package:learn_fluter/utils/snackbarCustom.dart';
 
 class AddTodoScreen extends StatefulWidget {
@@ -82,6 +83,9 @@ class AddTodoScreenState extends State<AddTodoScreen> {
       });
       TodoStorage.saveTodos(_todos);
       openSnackbar(context, 'Task Added: ${_controller.text}');
+      LocalNotification.displayNotification(
+          title: "Todo App Thông báo",
+          content: "Đã thêm công việc ${_controller.text}");
       _controller.clear();
       Navigator.pop(context);
     }

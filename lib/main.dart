@@ -2,8 +2,13 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:learn_fluter/screens/packages/packages_screen.dart';
 import 'package:learn_fluter/screens/todos/todos.dart';
+import 'package:learn_fluter/services/local_notification.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  LocalNotification.init();
+  tz.initializeTimeZones();
   runApp(const MyApp());
 }
 
@@ -13,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: BottomTab(),
+      home: TodoApp(),
       debugShowCheckedModeBanner: false,
     );
   }

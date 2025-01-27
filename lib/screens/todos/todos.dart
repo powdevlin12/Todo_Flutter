@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learn_fluter/commons/widgets/search_common.dart';
 import 'package:learn_fluter/models/todo_model.dart';
 import 'package:learn_fluter/screens/todos/todos_storage.dart';
+import 'package:learn_fluter/services/local_notification.dart';
 import 'package:learn_fluter/utils/SnackbarCustom.dart';
 import 'package:learn_fluter/screens/todos/add-todo-screen.dart';
 
@@ -24,8 +25,10 @@ class _TodoAppState extends State<TodoApp> {
 
   @override
   void initState() {
-    _loadTodos();
     super.initState();
+    _loadTodos().then((value) {
+      LocalNotification.askPermissionNotification();
+    });
     // _filteredTodos = _todos; // Ban đầu, danh sách lọc giống danh sách gốc
   }
 
