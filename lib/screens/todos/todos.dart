@@ -302,89 +302,93 @@ class _TodoAppState extends State<TodoApp> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: ListTile(
-                            title: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Text(
-                                //   todo.date,
-                                //   style: const TextStyle(
-                                //       fontSize: 12,
-                                //       fontWeight: FontWeight.w600,
-                                //       color: Colors.grey),
-                                // ),
-                                Text(
-                                  todo.content,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    decoration: todo.isDone
-                                        ? TextDecoration.lineThrough
-                                        : TextDecoration.none,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: ListTile(
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Text(
+                                  //   todo.date,
+                                  //   style: const TextStyle(
+                                  //       fontSize: 12,
+                                  //       fontWeight: FontWeight.w600,
+                                  //       color: Colors.grey),
+                                  // ),
+                                  Text(
+                                    todo.content,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: todo.isDone
+                                          ? TextDecoration.lineThrough
+                                          : TextDecoration.none,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              leading: SizedBox(
+                                width: 50,
+                                child: Center(
+                                  child: Text(
+                                    todo.point.toString(),
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: todo.point! >= 0
+                                            ? Colors.blueAccent
+                                            : Colors.red),
                                   ),
                                 ),
-                              ],
-                            ),
-                            leading: SizedBox(
-                              width: 50,
-                              child: Center(
-                                child: Text(
-                                  todo.point.toString(),
-                                  style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      color: todo.point! >= 0
-                                          ? Colors.blueAccent
-                                          : Colors.red),
-                                ),
                               ),
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                todo.isDone
-                                    ? IconButton(
-                                        icon: const Icon(Icons.check,
-                                            color: Colors.blueAccent),
-                                        onPressed: () => {},
-                                      )
-                                    : Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 50,
-                                            child: IconButton(
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  todo.isDone
+                                      ? IconButton(
+                                          icon: const Icon(Icons.check,
+                                              color: Colors.blueAccent),
+                                          onPressed: () => {},
+                                        )
+                                      : Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 50,
+                                              child: IconButton(
+                                                  icon: const Icon(
+                                                    Icons.add,
+                                                    color: Colors.blue,
+                                                    size: 32,
+                                                  ),
+                                                  onPressed: () =>
+                                                      _handlePlusPoint(
+                                                          todo.id)),
+                                            ),
+                                            SizedBox(
+                                              width: 50,
+                                              child: IconButton(
                                                 icon: const Icon(
-                                                  Icons.add,
-                                                  color: Colors.blue,
+                                                  Icons.exposure_minus_1_sharp,
+                                                  color: Colors.brown,
                                                   size: 32,
                                                 ),
                                                 onPressed: () =>
-                                                    _handlePlusPoint(todo.id)),
-                                          ),
-                                          SizedBox(
-                                            width: 50,
-                                            child: IconButton(
-                                              icon: const Icon(
-                                                Icons.exposure_minus_1_sharp,
-                                                color: Colors.brown,
-                                                size: 32,
+                                                    _handleSubPoint(todo.id),
                                               ),
-                                              onPressed: () =>
-                                                  _handleSubPoint(todo.id),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: 36,
-                                            child: IconButton(
-                                              icon: const Icon(Icons.delete,
-                                                  color: Colors.red),
-                                              onPressed: () =>
-                                                  _handleDeleteItem(todo.id),
+                                            SizedBox(
+                                              width: 36,
+                                              child: IconButton(
+                                                icon: const Icon(Icons.delete,
+                                                    color: Colors.red),
+                                                onPressed: () =>
+                                                    _handleDeleteItem(todo.id),
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      )
-                              ],
+                                          ],
+                                        )
+                                ],
+                              ),
                             ),
                           ),
                         );
