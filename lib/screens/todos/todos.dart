@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:learn_fluter/commons/widgets/search_common.dart';
 import 'package:learn_fluter/models/todo_model.dart';
 import 'package:learn_fluter/screens/todos/todos_storage.dart';
@@ -21,7 +22,7 @@ class _TodoAppState extends State<TodoApp> {
   List<Todo> _todos = [];
   List<Todo> _filteredTodos = [];
   final TextEditingController _dateController = TextEditingController();
-  SingingCharacter? _character = SingingCharacter.all;
+  final SingingCharacter _character = SingingCharacter.all;
 
   @override
   void initState() {
@@ -109,6 +110,8 @@ class _TodoAppState extends State<TodoApp> {
     });
 
     TodoStorage.saveTodos(_todos);
+
+    HapticFeedback.heavyImpact();
   }
 
   void _handleSubPoint(String id) {
@@ -123,6 +126,7 @@ class _TodoAppState extends State<TodoApp> {
     });
 
     TodoStorage.saveTodos(_todos);
+    HapticFeedback.heavyImpact();
   }
 
   Future<void> toggleDoneTodo(String id, bool? isDone) async {
@@ -248,109 +252,7 @@ class _TodoAppState extends State<TodoApp> {
               onSearch: _handleSearch,
             ),
             const SizedBox(height: 6),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Filter',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-                ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.filter_list_sharp,
-                    size: 32,
-                  ),
-                  onPressed: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return StatefulBuilder(
-                          builder: (context, setState) {
-                            return Container(
-                              height: 300 +
-                                  MediaQuery.of(context).viewInsets.bottom,
-                              // color: Colors.amber,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 20),
-                              alignment: Alignment.topLeft,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  const Text(
-                                    'Type todo',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  Column(
-                                    children: <Widget>[
-                                      RadioListTile<SingingCharacter>(
-                                        title: const Text('All'),
-                                        value: SingingCharacter.all,
-                                        groupValue: _character,
-                                        onChanged: (SingingCharacter? value) {
-                                          setState(() {
-                                            _character = value;
-                                          });
-                                        },
-                                      ),
-                                      RadioListTile<SingingCharacter>(
-                                        title: const Text('Done'),
-                                        value: SingingCharacter.done,
-                                        groupValue: _character,
-                                        onChanged: (SingingCharacter? value) {
-                                          setState(() {
-                                            _character = value;
-                                          });
-                                        },
-                                      ),
-                                      RadioListTile<SingingCharacter>(
-                                        title: const Text('Not Done'),
-                                        value: SingingCharacter.notDone,
-                                        groupValue: _character,
-                                        onChanged: (SingingCharacter? value) {
-                                          setState(() {
-                                            _character = value;
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: handleFilter,
-                                      style: ElevatedButton.styleFrom(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                            horizontal: 24,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                          backgroundColor:
-                                              Colors.grey.shade700),
-                                      child: const Text(
-                                        'Filter',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 16),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                )
-              ],
-            ),
+
             const SizedBox(height: 4),
             // Task List
             Expanded(
@@ -392,25 +294,21 @@ class _TodoAppState extends State<TodoApp> {
                                         : TextDecoration.none,
                                   ),
                                 ),
-                                if (todo.point != null)
-                                  Text(
-                                    todo.point.toString(),
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: todo.point! >= 0
-                                            ? Colors.blueAccent
-                                            : Colors.red),
-                                  )
                               ],
                             ),
-                            leading: Checkbox(
-                              shape: const CircleBorder(),
-                              activeColor: Colors.blue,
-                              value: todo.isDone,
-                              onChanged: (value) {
-                                toggleDoneTodo(todo.id, value);
-                              },
+                            leading: SizedBox(
+                              width: 50,
+                              child: Center(
+                                child: Text(
+                                  todo.point.toString(),
+                                  style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: todo.point! >= 0
+                                          ? Colors.blueAccent
+                                          : Colors.red),
+                                ),
+                              ),
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -424,19 +322,24 @@ class _TodoAppState extends State<TodoApp> {
                                     : Row(
                                         children: [
                                           SizedBox(
-                                            width: 40,
+                                            width: 50,
                                             child: IconButton(
-                                                icon: const Icon(Icons.add,
-                                                    color: Colors.blue),
+                                                icon: const Icon(
+                                                  Icons.add,
+                                                  color: Colors.blue,
+                                                  size: 32,
+                                                ),
                                                 onPressed: () =>
                                                     _handlePlusPoint(todo.id)),
                                           ),
                                           SizedBox(
-                                            width: 40,
+                                            width: 50,
                                             child: IconButton(
                                               icon: const Icon(
-                                                  Icons.exposure_minus_1_sharp,
-                                                  color: Colors.brown),
+                                                Icons.exposure_minus_1_sharp,
+                                                color: Colors.brown,
+                                                size: 32,
+                                              ),
                                               onPressed: () =>
                                                   _handleSubPoint(todo.id),
                                             ),

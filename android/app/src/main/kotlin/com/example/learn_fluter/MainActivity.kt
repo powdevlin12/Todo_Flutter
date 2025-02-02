@@ -1,4 +1,4 @@
-package com.example.learn_fluter
+package com.example.xi_dach
 
 import io.flutter.embedding.android.FlutterActivity
 

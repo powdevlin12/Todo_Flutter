@@ -83,9 +83,9 @@ class AddTodoScreenState extends State<AddTodoScreen> {
       });
       TodoStorage.saveTodos(_todos);
       openSnackbar(context, 'Task Added: ${_controller.text}');
-      LocalNotification.displayNotification(
-          title: "Todo App Thông báo",
-          content: "Đã thêm công việc ${_controller.text}");
+      // LocalNotification.displayNotification(
+      //     title: "Todo App Thông báo",
+      //     content: "Đã thêm công việc ${_controller.text}");
       _controller.clear();
       Navigator.pop(context);
     }
