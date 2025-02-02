@@ -24,11 +24,23 @@ class _TodoAppState extends State<TodoApp> {
   final TextEditingController _dateController = TextEditingController();
   final SingingCharacter _character = SingingCharacter.all;
 
+  // ** total point
+  int totalPoint = 0;
+
+  void calculatePoint() {
+    int sum = (_todos).fold(0, (sum, i) => sum + i.point!);
+    setState(() {
+      totalPoint = sum;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _loadTodos().then((value) {
       LocalNotification.askPermissionNotification();
+    }).then((value) {
+      calculatePoint();
     });
     // _filteredTodos = _todos; // Ban đầu, danh sách lọc giống danh sách gốc
   }
@@ -107,6 +119,7 @@ class _TodoAppState extends State<TodoApp> {
     setState(() {
       _todos[todoIndex] = todoProcessing;
       _filteredTodos = _todos;
+      calculatePoint();
     });
 
     TodoStorage.saveTodos(_todos);
@@ -124,6 +137,7 @@ class _TodoAppState extends State<TodoApp> {
       _todos[todoIndex] = todoProcessing;
       _filteredTodos = _todos;
     });
+    calculatePoint();
 
     TodoStorage.saveTodos(_todos);
     HapticFeedback.heavyImpact();
@@ -252,7 +266,22 @@ class _TodoAppState extends State<TodoApp> {
               onSearch: _handleSearch,
             ),
             const SizedBox(height: 6),
-
+            Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                spacing: 8,
+                children: [
+                  const Text(
+                    "Tổng",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                  ),
+                  Text(
+                    totalPoint.toString(),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        color: totalPoint >= 0 ? Colors.blue : Colors.red),
+                  )
+                ]),
             const SizedBox(height: 4),
             // Task List
             Expanded(
