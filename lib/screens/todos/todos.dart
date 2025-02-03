@@ -243,7 +243,7 @@ class _TodoAppState extends State<TodoApp> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'BaiBac',
+          'XiDach',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
